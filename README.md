@@ -37,6 +37,9 @@ This is the backend of a Personal Finance Application built using **ExpressJS**,
 ├── .gitignore
 ├── .sequelizerc
 ├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── CONVENTION.md
+├── ERD.md
 ├── LICENSE
 ├── package-lock.json
 ├── package.json
@@ -77,11 +80,22 @@ This is the backend of a Personal Finance Application built using **ExpressJS**,
    Create a `.env` file in the root directory and add the following environment variables:
 
    ```bash
-   DB_HOST=localhost
-   DB_USER=root
-   DB_PASSWORD=your_password
-   DB_NAME=personal_finance_db
-   JWT_SECRET=your_secret_key
+    DB_USERNAME=root
+    DB_PASSWORD=
+    DB_HOST=localhost
+    DB_PORT=3306
+    DB_DATABASE=finance_tracker_db
+    DB_LOGGING=true
+    DB_BENCHMARK=true
+
+    HOSTNAME=0.0.0.0
+    PORT=3001
+
+    JWT_KEY=secret
+    JWT_EXPIRATION=7d
+
+    EMAIL_USERNAME=
+    EMAIL_PASSWORD=
    ```
 
 4. Run the app:
