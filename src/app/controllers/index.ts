@@ -12,4 +12,5 @@ export * from './user/auth.controller';
  * **************************************************************
  */
 
+export * from './finance/transaction.controller';
 export * from './finance/wallet.controller';

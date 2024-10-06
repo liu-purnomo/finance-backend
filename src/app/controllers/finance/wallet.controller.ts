@@ -18,7 +18,7 @@ export class WalletController {
             );
 
             const response = {
-                data,
+                // data,
                 status: 'success',
                 message: 'Data created successfully'
             };
@@ -26,12 +26,12 @@ export class WalletController {
             await transaction.commit();
             res.status(200).json(response);
 
-            (req as any).payload = {
-                response,
-                data: [{ data, modelName: 'Wallet' }]
-            };
+            // (req as any).payload = {
+            //     response,
+            //     data: [{ data, modelName: 'Wallet' }]
+            // };
 
-            next();
+            // next();
         } catch (error) {
             await transaction.rollback();
             next(error);
@@ -57,7 +57,7 @@ export class WalletController {
             );
 
             const response = {
-                data,
+                // data,
                 status: 'success',
                 message: 'Data updated successfully'
             };
@@ -65,12 +65,12 @@ export class WalletController {
             await transaction.commit();
             res.status(200).json(response);
 
-            (req as any).payload = {
-                response,
-                data: [{ data, modelName: 'Wallet' }]
-            };
+            // (req as any).payload = {
+            //     response,
+            //     data: [{ data, modelName: 'Wallet' }]
+            // };
 
-            next();
+            // next();
         } catch (error) {
             await transaction.rollback();
             next(error);
@@ -137,15 +137,15 @@ export class WalletController {
 
             const response = { status: 'success', message: 'Deleted data successfully' };
 
+            await transaction.commit();
             res.status(200).json(response);
 
-            await transaction.commit();
-            (req as any).payload = {
-                response,
-                data: [{ data, modelName: 'Wallet' }]
-            };
+            // (req as any).payload = {
+            //     response,
+            //     data: [{ data, modelName: 'Wallet' }]
+            // };
 
-            next();
+            // next();
         } catch (error) {
             await transaction.rollback();
             next(error);
