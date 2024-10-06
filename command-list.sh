@@ -4,6 +4,10 @@ npm i express sequelize mysql2 dotenv cors jsonwebtoken nodemailer bcrypt
 
 npm i -D typescript ts-node sequelize-cli @types/node @types/express nodemon @types/jsonwebtoken @types/cors @types/nodemailer
 
+# install global sequelize-cli and nodemone
+
+npm i -g sequelize-cli nodemon
+
 
 # 1. **User**
 #    - `id` (PK) - UUID
@@ -67,3 +71,5 @@ sequelize model:create --name Budget --attributes name:string,description:text,a
 #    - `updatedAt` - Timestamp
 
 sequelize model:create --name SavingGoal --attributes name:string,description:text,targetAmount:decimal,currentAmount:decimal,targetDate:date,userId:uuid
+
+sequelize init
