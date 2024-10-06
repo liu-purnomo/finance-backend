@@ -24,7 +24,7 @@ export class WalletController {
             };
 
             await transaction.commit();
-            res.status(201).json(response);
+            res.status(200).json(response);
 
             (req as any).payload = {
                 response,
@@ -126,7 +126,7 @@ export class WalletController {
     static async delete(req: Request, res: Response, next: NextFunction) {
         const transaction = await sequelize.transaction();
         try {
-            const { id } = req.body;
+            const { id } = req.params;
             const { userId } = (req as any).user;
 
             const data = await WalletService.delete(id, userId, transaction);
