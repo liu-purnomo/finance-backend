@@ -197,7 +197,7 @@ export const notificationEmail = ({
 																	<div>
 																		<div class style="font-size: 12px; mso-line-height-alt: 14px; color: #4c5e6e; line-height: 1.2;">
 																			<p style="margin: 0; font-size: 13px; text-align: left; mso-line-height-alt: 15.6px;"><span style="font-size:13px;">Thank you</span></p>
-																			<p style="margin: 0; font-size: 13px; text-align: left; mso-line-height-alt: 15.6px;"><span style="font-size:13px;">Drone Indonesia support team</span></p>
+																			<p style="margin: 0; font-size: 13px; text-align: left; mso-line-height-alt: 15.6px;"><span style="font-size:13px;">Ikat support team</span></p>
 																		</div>
 																	</div>
 																</td>
