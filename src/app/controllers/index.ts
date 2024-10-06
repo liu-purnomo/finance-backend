@@ -4,4 +4,4 @@
  * **************************************************************
  */
 
-export * from './user/user.service';
+export * from './user/auth.controller';

@@ -1,48 +1,51 @@
 {
-  "name": "personal-finance-tracker",
-  "version": "1.0.0",
-  "description": "Backend for Personal Finance Tracker",
-  "main": "dist/index.js",
-  "scripts": {
-    "test": "test/index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/liu-purnomo/finance-backend.git"
-  },
-  "keywords": [
-    "finance",
-    "sequelize",
-    "typerscript",
-    "express",
-    "mysql",
-    "money"
-  ],
-  "author": "hi@liupurnomo.com",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/liu-purnomo/finance-backend/issues"
-  },
-  "homepage": "https://github.com/liu-purnomo/finance-backend#readme",
-  "dependencies": {
-    "bcrypt": "^5.1.1",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.21.0",
-    "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.11.3",
-    "nodemailer": "^6.9.15",
-    "sequelize": "^6.37.4"
-  },
-  "devDependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.0",
-    "@types/jsonwebtoken": "^9.0.7",
-    "@types/node": "^22.7.4",
-    "@types/nodemailer": "^6.4.16",
-    "nodemon": "^3.1.7",
-    "sequelize-cli": "^6.6.2",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.6.2"
-  }
+    "name": "personal-finance-tracker",
+    "version": "1.0.0",
+    "description": "Backend for Personal Finance Tracker",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "npx tsc",
+        "dev": "npx nodemon ./src/index.ts",
+        "start": "node ./dist/index.js",
+        "db:reset": "npx sequelize db:drop && npx sequelize db:create && npx sequelize db:migrate"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com/liu-purnomo/finance-backend.git"
+    },
+    "keywords": [
+        "finance",
+        "sequelize",
+        "typerscript",
+        "express",
+        "mysql",
+        "money"
+    ],
+    "author": "hi@liupurnomo.com",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/liu-purnomo/finance-backend/issues"
+    },
+    "homepage": "https://github.com/liu-purnomo/finance-backend#readme",
+    "dependencies": {
+        "bcrypt": "^5.1.1",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
+        "express": "^4.21.0",
+        "jsonwebtoken": "^9.0.2",
+        "mysql2": "^3.11.3",
+        "nodemailer": "^6.9.15",
+        "sequelize": "^6.37.4"
+    },
+    "devDependencies": {
+        "@types/cors": "^2.8.17",
+        "@types/express": "^5.0.0",
+        "@types/jsonwebtoken": "^9.0.7",
+        "@types/node": "^22.7.4",
+        "@types/nodemailer": "^6.4.16",
+        "nodemon": "^3.1.7",
+        "sequelize-cli": "^6.6.2",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.6.2"
+    }
 }
