@@ -72,4 +72,9 @@ export class TransactionService {
     static async getAll(userId: string) {
         return await Transaction.findAll({ where: { userId } });
     }
+
+    static async delete(id: string, userId: string, transaction: SequelizeTransaction) {
+        const count = await Transaction.destroy({ where: { id, userId }, transaction });
+        return count;
+    }
 }
