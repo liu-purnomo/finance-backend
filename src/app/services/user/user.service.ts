@@ -7,7 +7,8 @@ interface ICreateProps {
     name: string;
     email: string;
     password: string;
-    token?: string;
+    token: string | null;
+    isVerified: boolean;
 }
 
 interface IGetAllProps extends IDefaultQueryProps {
