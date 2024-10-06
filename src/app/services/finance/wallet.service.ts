@@ -27,12 +27,19 @@ export class WalletService {
         return await Wallet.create(params, { transaction });
     }
 
-    static async update(id: string, params: Partial<ICreateProps>, transaction: Transaction) {
-        return await Wallet.update(params, { where: { id }, transaction });
+    static async update(
+        id: string,
+        userId: string,
+        params: Partial<ICreateProps>,
+        transaction: Transaction
+    ) {
+        return await Wallet.update(params, { where: { id, userId }, transaction });
     }
 
-    static async detail(id: string) {
-        return await Wallet.findByPk(id);
+    static async detail(id: string, userId: string) {
+        return await Wallet.findOne({
+            where: { id, userId }
+        });
     }
 
     static async index(query: IGetAllProps) {
@@ -57,8 +64,8 @@ export class WalletService {
         return await Wallet.findAll({ where: { userId }, attributes: ['id', 'type', 'name'] });
     }
 
-    static async delete(id: string, transaction: Transaction) {
-        const count = await Wallet.destroy({ where: { id }, transaction });
+    static async delete(id: string, userId: string, transaction: Transaction) {
+        const count = await Wallet.destroy({ where: { id, userId }, transaction });
 
         return count;
     }
