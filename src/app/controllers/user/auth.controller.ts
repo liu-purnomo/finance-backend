@@ -5,7 +5,7 @@ import { Generator } from '../../../helpers/utils';
 import { comparePassword, encrypt, hashPassword, sendEmail } from '../../../libraries';
 import { UserService } from '../../services';
 
-const { sequelize } = require('../../db/models');
+const { sequelize } = require('../../../db/models');
 
 export class AuthController {
     static async register(req: Request, res: Response, next: NextFunction) {
@@ -46,7 +46,7 @@ Click here to verify your account: ${url}
           `
             });
 
-            const sendConfirmationEmail = await sendEmail({
+            await sendEmail({
                 email: email,
                 subject: 'Verify your account',
                 content: emailContent
@@ -58,7 +58,7 @@ Click here to verify your account: ${url}
             };
 
             await transaction.commit();
-            res.status(201).json(response);
+            res.status(200).json(response);
         } catch (error) {
             await transaction.rollback();
             next(error);
