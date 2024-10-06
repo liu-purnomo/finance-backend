@@ -1,0 +1,27 @@
+{
+  "name": "personal-finance-tracker",
+  "version": "1.0.0",
+  "description": "Backend for Personal Finance Tracker",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/liu-purnomo/finance-backend.git"
+  },
+  "keywords": [
+    "finance",
+    "sequelize",
+    "typerscript",
+    "express",
+    "mysql",
+    "money"
+  ],
+  "author": "hi@liupurnomo.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/liu-purnomo/finance-backend/issues"
+  },
+  "homepage": "https://github.com/liu-purnomo/finance-backend#readme"
+}
