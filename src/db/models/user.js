@@ -39,7 +39,11 @@ module.exports = (sequelize, DataTypes) => {
                     field: 'Password'
                 })
             },
-            token: DataTypes.STRING
+            token: DataTypes.STRING,
+            isVerified: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false
+            }
         },
         {
             sequelize,

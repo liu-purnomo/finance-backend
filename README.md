@@ -11,6 +11,10 @@ This is the backend of a Personal Finance Application built using **ExpressJS**,
 - **Budget Goals**: Users can create budget goals with categories and 'timeframes'.
 - **Saving Goals**: Users can set saving targets and track their progress.
 
+## API Documentation
+
+Please read full documentation at [https://personal-finance.apidog.io/](https://personal-finance.apidog.io)
+
 ## Project Structure
 
 ```
