@@ -1,5 +1,4 @@
 import { Transaction } from 'sequelize';
-import { whereFilter } from '../../../helpers/utils';
 import { IDefaultQueryProps } from '../../../interfaces/default';
 
 const { User } = require('../../../db/models');
@@ -33,28 +32,6 @@ export class UserService {
 
     static async findByEmail(email: string) {
         return await User.findOne({ where: { email } });
-    }
-
-    static async index(query: IGetAllProps) {
-        const { limit, offset, order, sort, search, name, email } = query;
-
-        const where = whereFilter({ search, dataToFilter: { name, email } });
-
-        const sortOption = [[sort, order]];
-
-        return await User.findAndCountAll({
-            where,
-            limit,
-            offset,
-            distinct: true,
-            order: sortOption,
-            // include: defaultInclude,
-            subQuery: false
-        });
-    }
-
-    static async getAll() {
-        return await User.findAll({ attributes: ['id', 'name'] });
     }
 
     static async delete(id: string, transaction: Transaction) {
