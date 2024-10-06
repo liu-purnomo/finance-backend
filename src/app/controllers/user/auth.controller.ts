@@ -23,7 +23,7 @@ export class AuthController {
                 isLowercase: false
             });
 
-            const data = await UserService.create(
+            await UserService.create(
                 {
                     email,
                     token,
@@ -153,10 +153,6 @@ Click here to verify your account: ${url}
             const user = await UserService.findByEmail(email);
             if (!user) throw notFoundError('User');
 
-            if (user.status !== 'Active') {
-                throw errorList.inactiveAccount;
-            }
-
             const token = Generator.key({
                 length: 4,
                 isUppercase: true
@@ -233,7 +229,6 @@ Click here to reset your password: ${url}
             const user = await UserService.findByEmail(email);
             if (!user) throw errorList.notFound;
             if (user.token !== code) throw errorList.invalidToken;
-            if (user.status !== 'Active') throw errorList.inactiveAccount;
 
             const hashedPassword = hashPassword(password);
 
