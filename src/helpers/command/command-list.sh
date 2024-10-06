@@ -15,22 +15,23 @@ npm i -g sequelize-cli nodemon
 #    - `email` - String (unique)
 #    - `password` - String
 #    - `token` - String
+#    - `isVerified` - Boolean
 #    - `createdAt` - Timestamp
 #    - `updatedAt` - Timestamp
 
-sequelize model:create --name User --attributes name:string,email:string,password:string,token:string
+sequelize model:create --name User --attributes name:string,email:string,password:string,token:string,isVerified:boolean
 
 # 2. **Wallet**
 #    - `id` (PK) - UUID
 #    - `name` - String
 #    - `balance` - Decimal
 #    - `currency` - String
-#    - `description` - String
+#    - `description` - Text
 #    - `userId` (FK to User) - UUID
 #    - `createdAt` - Timestamp
 #    - `updatedAt` - Timestamp
 
-sequelize model:create --name Wallet --attributes name:string,balance:decimal,currency:string,userId:uuid
+sequelize model:create --name Wallet --attributes name:string,balance:decimal,currency:string,description:text,userId:uuid
 
 # 3. **Transaction**
 #    - `id` (PK) - UUID

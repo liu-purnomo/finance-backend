@@ -6,6 +6,7 @@
    - `email` - String (unique)
    - `password` - String
    - `token` - String
+   - `isVerified ` - Boolean
    - `createdAt` - Timestamp
    - `updatedAt` - Timestamp
 
