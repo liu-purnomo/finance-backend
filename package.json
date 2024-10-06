@@ -33,5 +33,16 @@
     "mysql2": "^3.11.3",
     "nodemailer": "^6.9.15",
     "sequelize": "^6.37.4"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^22.7.4",
+    "@types/nodemailer": "^6.4.16",
+    "nodemon": "^3.1.7",
+    "sequelize-cli": "^6.6.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2"
   }
 }
