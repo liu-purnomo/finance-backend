@@ -34,7 +34,7 @@ export class AuthController {
                 transaction
             );
 
-            const url = `${process.env.PUBLIC_URL}/auth/verify?email=${email}&code=${token}`;
+            const url = `${process.env.SITE_URL}/auth/verify?email=${email}&code=${token}`;
 
             const emailContent = notificationEmail({
                 buttonUrl: url,
@@ -166,7 +166,7 @@ Click here to verify your account: ${url}
                 transaction
             );
 
-            const url = `${process.env.PUBLIC_URL}/auth/reset-password?email=${user.email}&code=${token}`;
+            const url = `${process.env.SITE_URL}/auth/reset-password?email=${user.email}&code=${token}`;
 
             const emailContent = notificationEmail({
                 buttonUrl: url,
