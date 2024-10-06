@@ -41,10 +41,11 @@ sequelize model:create --name Wallet --attributes name:string,balance:decimal,cu
 #    - `type` - Enum ('INCOME', 'EXPENSE')
 #    - `category` - String
 #    - `walletId` (FK to Wallet) - UUID
+#    - `userId` (FK to User) - UUID
 #    - `createdAt` - Timestamp
 #    - `updatedAt` - Timestamp
 
-sequelize model:create --name Transaction --attributes amount:decimal,description:string,transactionDate:date,type:enum,category:string,walletId:uuid
+sequelize model:create --name Transaction --attributes amount:decimal,description:string,transactionDate:date,type:enum,category:string,walletId:uuid,userId:uuid
 
 # 4. **Budget**
 #    - `id` (PK) - UUID
