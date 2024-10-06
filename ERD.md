@@ -5,6 +5,7 @@
    - `name` - String
    - `email` - String (unique)
    - `password` - String
+   - `token` - String
    - `createdAt` - Timestamp
    - `updatedAt` - Timestamp
 
@@ -13,6 +14,7 @@
    - `name` - String
    - `balance` - Decimal
    - `currency` - String
+   - `description` - String
    - `userId` (FK to User) - UUID
    - `createdAt` - Timestamp
    - `updatedAt` - Timestamp
@@ -30,6 +32,8 @@
 
 4. **Budget**
    - `id` (PK) - UUID
+   - `name` - String
+   - `description` - Text
    - `amount` - Decimal
    - `startDate` - Date
    - `endDate` - Date
@@ -40,6 +44,8 @@
 
 5. **SavingGoal**
    - `id` (PK) - UUID
+   - `name` - String
+   - `description` - Text
    - `targetAmount` - Decimal
    - `currentAmount` - Decimal
    - `targetDate` - Date
