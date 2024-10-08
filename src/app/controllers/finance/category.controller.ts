@@ -1,21 +1,18 @@
 import { NextFunction, Request, Response } from 'express';
 import { errorList } from '../../../helpers/errors';
 import { indexResponse } from '../../../helpers/utils';
-import { WalletService } from '../../services';
+import { CategoryService } from '../../services';
 const { sequelize } = require('../../../db/models');
 
-export class WalletController {
+export class CategoryController {
     static async create(req: Request, res: Response, next: NextFunction) {
         const transaction = await sequelize.transaction();
         try {
-            const { type, name, balance, currency, description } = req.body;
+            const { name, icon } = req.body;
 
             const { userId } = (req as any).user;
 
-            await WalletService.create(
-                { type, name, balance, currency, description, userId },
-                transaction
-            );
+            await CategoryService.create({ name, icon, userId }, transaction);
 
             const response = {
                 status: 'success',
@@ -35,18 +32,13 @@ export class WalletController {
         try {
             const { userId } = (req as any).user;
             const { id } = req.params;
-            const { type, name, balance, currency, description } = req.body;
+            const { name, icon } = req.body;
 
-            const isExists = await WalletService.detail(id, userId);
+            const isExists = await CategoryService.detail(id, userId);
 
             if (!isExists) throw errorList.notFound;
 
-            await WalletService.update(
-                id,
-                userId,
-                { type, name, balance, currency, description },
-                transaction
-            );
+            await CategoryService.update(id, userId, { name, icon }, transaction);
 
             const response = {
                 status: 'success',
@@ -66,7 +58,7 @@ export class WalletController {
             const { id } = req.params;
             const { userId } = (req as any).user;
 
-            const data = await WalletService.detail(id, userId);
+            const data = await CategoryService.detail(id, userId);
             if (!data) throw errorList.notFound;
 
             res.status(200).json({
@@ -81,19 +73,17 @@ export class WalletController {
 
     static async index(req: Request, res: Response, next: NextFunction) {
         try {
-            const { page, size, search, sort, order, type, name, currency } = req.query;
+            const { page, size, search, sort, order, name } = req.query;
             const { userId } = (req as any).user;
 
             const limit = size ? Number(size) : 10;
             const offset = page ? (Number(page) - 1) * limit : 0;
 
-            const data = await WalletService.index({
+            const data = await CategoryService.index({
                 limit,
                 offset,
                 search,
-                type,
                 name,
-                currency,
                 userId,
                 order: order ? order : 'DESC',
                 sort: sort ? sort : 'createdAt'
@@ -113,7 +103,7 @@ export class WalletController {
             const { id } = req.params;
             const { userId } = (req as any).user;
 
-            const data = await WalletService.delete(id, userId, transaction);
+            const data = await CategoryService.delete(id, userId, transaction);
 
             if (data === 0) {
                 throw errorList.notFound;
@@ -132,7 +122,7 @@ export class WalletController {
     static async getAll(req: Request, res: Response, next: NextFunction) {
         try {
             const { userId } = (req as any).user;
-            const data = await WalletService.getAll(userId);
+            const data = await CategoryService.getAll(userId);
             res.status(200).json(data);
         } catch (error) {
             next(error);
