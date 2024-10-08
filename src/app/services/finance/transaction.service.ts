@@ -9,7 +9,7 @@ interface ICreateProps {
     description?: string;
     transactionDate: Date;
     type: string;
-    subCategory: string;
+    subCategoryId: string;
     walletId: string;
     userId: string;
 }

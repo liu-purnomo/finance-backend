@@ -50,7 +50,12 @@ module.exports = (sequelize, DataTypes) => {
                     field: 'Type'
                 })
             },
-            subCategoryId: DataTypes.UUID,
+            subCategoryId: {
+                type: DataTypes.UUID,
+                ...validation({
+                    field: 'SubCategory'
+                })
+            },
             walletId: DataTypes.UUID,
             userId: DataTypes.UUID
         },

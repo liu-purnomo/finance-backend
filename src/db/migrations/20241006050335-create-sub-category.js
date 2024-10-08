@@ -14,6 +14,7 @@ module.exports = {
             },
             categoryId: {
                 type: Sequelize.UUID,
+                allowNull: false,
                 references: {
                     model: 'Categories',
                     key: 'id'

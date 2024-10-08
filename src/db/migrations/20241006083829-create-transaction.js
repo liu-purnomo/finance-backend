@@ -24,6 +24,7 @@ module.exports = {
             },
             subCategoryId: {
                 type: Sequelize.UUID,
+                allowNull: false,
                 references: {
                     model: 'SubCategories',
                     key: 'id'

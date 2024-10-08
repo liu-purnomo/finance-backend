@@ -1,5 +1,6 @@
 'use strict';
 const { Model } = require('sequelize');
+const { validation } = require('../helpers');
 module.exports = (sequelize, DataTypes) => {
     class SubCategory extends Model {
         /**
@@ -30,9 +31,17 @@ module.exports = (sequelize, DataTypes) => {
                 defaultValue: DataTypes.UUIDV4
             },
             name: {
-                type: DataTypes.STRING
+                type: DataTypes.STRING,
+                ...validation({
+                    field: 'Name'
+                })
             },
-            categoryId: DataTypes.UUID
+            categoryId: {
+                type: DataTypes.UUID,
+                ...validation({
+                    field: 'Category'
+                })
+            }
         },
         {
             sequelize,
