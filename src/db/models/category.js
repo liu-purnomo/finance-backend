@@ -2,7 +2,7 @@
 const { Model } = require('sequelize');
 const { validation } = require('../helpers');
 module.exports = (sequelize, DataTypes) => {
-    class Transaction extends Model {
+    class Category extends Model {
         /**
          * Helper method for defining associations.
          * This method is not a part of Sequelize lifecycle.
@@ -11,23 +11,18 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             // define association here
 
-            Transaction.belongsTo(models.Wallet, {
-                foreignKey: 'walletId',
-                onDelete: 'CASCADE'
-            });
-
-            Transaction.belongsTo(models.User, {
+            Category.belongsTo(models.User, {
                 foreignKey: 'userId',
                 onDelete: 'CASCADE'
             });
 
-            Transaction.belongsTo(models.SubCategory, {
-                foreignKey: 'subCategoryId',
+            Category.hasMany(models.SubCategory, {
+                foreignKey: 'categoryId',
                 onDelete: 'CASCADE'
             });
         }
     }
-    Transaction.init(
+    Category.init(
         {
             id: {
                 allowNull: false,
@@ -35,29 +30,21 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.UUID,
                 defaultValue: DataTypes.UUIDV4
             },
-            amount: {
-                type: DataTypes.DECIMAL(15, 2),
+            name: {
+                type: DataTypes.STRING,
                 ...validation({
-                    field: 'Amount'
+                    field: 'Name'
                 })
             },
-            description: DataTypes.STRING,
-            transactionDate: DataTypes.DATE,
-            type: {
-                type: DataTypes.ENUM,
-                values: ['INCOME', 'EXPENSE'],
-                ...validation({
-                    field: 'Type'
-                })
+            icon: {
+                type: DataTypes.STRING
             },
-            subCategoryId: DataTypes.UUID,
-            walletId: DataTypes.UUID,
             userId: DataTypes.UUID
         },
         {
             sequelize,
-            modelName: 'Transaction'
+            modelName: 'Category'
         }
     );
-    return Transaction;
+    return Category;
 };

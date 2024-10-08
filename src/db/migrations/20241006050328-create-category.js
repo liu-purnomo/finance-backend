@@ -2,44 +2,22 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('Transactions', {
+        await queryInterface.createTable('Categories', {
             id: {
                 allowNull: false,
                 primaryKey: true,
                 type: Sequelize.UUID,
                 defaultValue: Sequelize.UUIDV4
             },
-            amount: {
-                type: Sequelize.DECIMAL(15, 2)
-            },
-            description: {
+            name: {
                 type: Sequelize.STRING
             },
-            transactionDate: {
-                type: Sequelize.DATE
-            },
-            type: {
-                type: Sequelize.ENUM,
-                values: ['INCOME', 'EXPENSE']
-            },
-            subCategoryId: {
-                type: Sequelize.UUID,
-                references: {
-                    model: 'SubCategories',
-                    key: 'id'
-                },
-                onDelete: 'CASCADE'
-            },
-            walletId: {
-                type: Sequelize.UUID,
-                references: {
-                    model: 'Wallets',
-                    key: 'id'
-                },
-                onDelete: 'CASCADE'
+            icon: {
+                type: Sequelize.STRING
             },
             userId: {
                 type: Sequelize.UUID,
+                allowNull: false,
                 references: {
                     model: 'Users',
                     key: 'id'
@@ -57,6 +35,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('Transactions');
+        await queryInterface.dropTable('Categories');
     }
 };

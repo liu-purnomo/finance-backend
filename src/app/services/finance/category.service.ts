@@ -2,29 +2,22 @@ import { Transaction } from 'sequelize';
 import { whereFilter } from '../../../helpers/utils';
 import { IDefaultQueryProps } from '../../../interfaces/default';
 
-const { Wallet } = require('../../../db/models');
+const { Category } = require('../../../db/models');
 
 interface ICreateProps {
-    type: string;
     name: string;
-    balance: number;
-    currency: string;
-    description: string;
+    icon: string;
     userId: string;
 }
 
 interface IGetAllProps extends IDefaultQueryProps {
-    type?: string;
     name?: string;
-    currency?: string;
     userId: string;
 }
 
-const defaultInclude = [];
-
-export class WalletService {
+export class CategoryService {
     static async create(params: ICreateProps, transaction: Transaction) {
-        return await Wallet.create(params, { transaction });
+        return await Category.create(params, { transaction });
     }
 
     static async update(
@@ -33,39 +26,38 @@ export class WalletService {
         params: Partial<ICreateProps>,
         transaction: Transaction
     ) {
-        return await Wallet.update(params, { where: { id, userId }, transaction });
+        return await Category.update(params, { where: { id, userId }, transaction });
     }
 
     static async detail(id: string, userId: string) {
-        return await Wallet.findOne({
+        return await Category.findOne({
             where: { id, userId }
         });
     }
 
     static async index(query: IGetAllProps) {
-        const { limit, offset, order, sort, search, name, type, currency, userId } = query;
+        const { limit, offset, order, sort, search, name, userId } = query;
 
-        const where = whereFilter({ search, dataToFilter: { name, type, currency, userId } });
+        const where = whereFilter({ search, dataToFilter: { name, userId } });
 
         const sortOption = [[sort, order]];
 
-        return await Wallet.findAndCountAll({
+        return await Category.findAndCountAll({
             where,
             limit,
             offset,
             distinct: true,
             order: sortOption,
-            // include: defaultInclude,
             subQuery: false
         });
     }
 
     static async getAll(userId: string) {
-        return await Wallet.findAll({ where: { userId }, attributes: ['id', 'type', 'name'] });
+        return await Category.findAll({ where: { userId }, attributes: ['id', 'name'] });
     }
 
     static async delete(id: string, userId: string, transaction: Transaction) {
-        const count = await Wallet.destroy({ where: { id, userId }, transaction });
+        const count = await Category.destroy({ where: { id, userId }, transaction });
         return count;
     }
 }
