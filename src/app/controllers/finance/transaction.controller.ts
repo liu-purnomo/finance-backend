@@ -133,4 +133,39 @@ export class TransactionController {
             next(error);
         }
     }
+
+    static async delete(req: Request, res: Response, next: NextFunction) {
+        const transaction = await sequelize.transaction();
+        try {
+            const { id } = req.params;
+            const { userId } = (req as any).user;
+            const Transaction = await TransactionService.detail(id, userId);
+            if (!Transaction) throw notFoundError('Transaction');
+
+            const Wallet = await WalletService.detail(Transaction.walletId, userId);
+            if (!Wallet) throw notFoundError('Wallet');
+
+            let balance = 0;
+
+            if (Transaction.type === 'EXPENSE') {
+                balance = Number(Wallet.balance) + Number(Transaction.amount);
+            } else {
+                balance = Number(Wallet.balance) - Number(Transaction.amount);
+            }
+
+            await WalletService.update(Transaction.walletId, userId, { balance }, transaction);
+            await TransactionService.delete(id, userId, transaction);
+
+            const response = {
+                status: 'success',
+                message: 'Data deleted successfully'
+            };
+
+            await transaction.commit();
+            res.status(200).json(response);
+        } catch (error) {
+            await transaction.rollback();
+            next(error);
+        }
+    }
 }
