@@ -173,7 +173,7 @@ export class TransactionController {
         const transaction = await sequelize.transaction();
         try {
             const { id } = req.params;
-            const { amount, description } = req.body;
+            const { amount, description, transactionDate } = req.body;
             const { userId } = (req as any).user;
             const Transaction = await TransactionService.detail(id, userId);
             if (!Transaction) throw notFoundError('Transaction');
@@ -193,7 +193,12 @@ export class TransactionController {
             }
 
             await WalletService.update(Transaction.walletId, userId, { balance }, transaction);
-            await TransactionService.update(id, userId, { amount, description }, transaction);
+            await TransactionService.update(
+                id,
+                userId,
+                { amount, description, transactionDate },
+                transaction
+            );
 
             const response = {
                 status: 'success',
