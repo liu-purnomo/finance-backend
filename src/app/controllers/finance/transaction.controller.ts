@@ -10,8 +10,7 @@ export class TransactionController {
         const transaction = await sequelize.transaction();
         try {
             const { userId } = (req as any).user;
-            const { walletId, amount, description, transactionDate, type, subCategoryId } =
-                req.body;
+            const { walletId, amount, description, transactionDate, type, categoryId } = req.body;
 
             const isExpense = type === 'EXPENSE';
 
@@ -34,7 +33,7 @@ export class TransactionController {
             await WalletService.update(walletId, userId, { balance }, transaction);
 
             await TransactionService.create(
-                { walletId, amount, description, transactionDate, type, subCategoryId, userId },
+                { walletId, amount, description, transactionDate, type, categoryId, userId },
                 transaction
             );
 

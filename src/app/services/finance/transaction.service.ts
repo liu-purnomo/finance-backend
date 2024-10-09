@@ -2,14 +2,14 @@ import { Op, Transaction as SequelizeTransaction } from 'sequelize';
 import { whereFilter } from '../../../helpers/utils';
 import { IDefaultQueryProps } from '../../../interfaces/default';
 
-const { Transaction, Wallet, SubCategory, Category } = require('../../../db/models');
+const { Transaction, Wallet, Category } = require('../../../db/models');
 
 interface ICreateProps {
     amount: number;
     description?: string;
     transactionDate: Date;
     type: string;
-    subCategoryId: string;
+    categoryId: string;
     walletId: string;
     userId: string;
 }
@@ -28,9 +28,8 @@ const defaultInclude = [
         attributes: ['id', 'name']
     },
     {
-        model: SubCategory,
-        attributes: ['id', 'name'],
-        include: [{ model: Category, attributes: ['id', 'name', 'icon'] }]
+        model: Category,
+        attributes: ['id', 'name', 'icon']
     }
 ];
 
@@ -56,18 +55,7 @@ export class TransactionService {
     }
 
     static async index(query: IGetAllProps) {
-        const {
-            limit,
-            offset,
-            order,
-            sort,
-            search,
-            userId,
-            wallet,
-            description,
-            subCategory,
-            category
-        } = query;
+        const { limit, offset, order, sort, search, userId, wallet, description, category } = query;
 
         const where = whereFilter({
             search,
@@ -75,8 +63,7 @@ export class TransactionService {
                 userId,
                 '$wallet.name$': wallet,
                 description,
-                '$SubCategory.name$': subCategory,
-                '$SubCategory.Category.name$': category
+                '$Category.name$': category
             }
         });
 
@@ -101,6 +88,10 @@ export class TransactionService {
                     [Op.gte]: startDate,
                     [Op.lte]: endDate
                 }
+            },
+            include: {
+                model: Category,
+                attributes: ['id', 'icon', 'name']
             }
         });
     }

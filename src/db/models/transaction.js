@@ -21,8 +21,8 @@ module.exports = (sequelize, DataTypes) => {
                 onDelete: 'CASCADE'
             });
 
-            Transaction.belongsTo(models.SubCategory, {
-                foreignKey: 'subCategoryId',
+            Transaction.belongsTo(models.Category, {
+                foreignKey: 'categoryId',
                 onDelete: 'CASCADE'
             });
         }
@@ -50,14 +50,26 @@ module.exports = (sequelize, DataTypes) => {
                     field: 'Type'
                 })
             },
-            subCategoryId: {
+            categoryId: {
                 type: DataTypes.UUID,
                 ...validation({
-                    field: 'SubCategory'
+                    field: 'Category'
                 })
             },
             walletId: DataTypes.UUID,
-            userId: DataTypes.UUID
+            userId: DataTypes.UUID,
+            category: {
+                type: DataTypes.VIRTUAL,
+                get() {
+                    return this?.Category?.name;
+                }
+            },
+            icon: {
+                type: DataTypes.VIRTUAL,
+                get() {
+                    return this?.Category?.icon;
+                }
+            }
         },
         {
             sequelize,

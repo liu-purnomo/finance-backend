@@ -22,11 +22,11 @@ module.exports = {
                 type: Sequelize.ENUM,
                 values: ['INCOME', 'EXPENSE']
             },
-            subCategoryId: {
+            categoryId: {
                 type: Sequelize.UUID,
                 allowNull: false,
                 references: {
-                    model: 'SubCategories',
+                    model: 'Categories',
                     key: 'id'
                 },
                 onDelete: 'CASCADE'

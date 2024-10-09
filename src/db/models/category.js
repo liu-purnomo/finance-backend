@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
                 onDelete: 'CASCADE'
             });
 
-            Category.hasMany(models.SubCategory, {
+            Category.hasMany(models.Transaction, {
                 foreignKey: 'categoryId',
                 onDelete: 'CASCADE'
             });
