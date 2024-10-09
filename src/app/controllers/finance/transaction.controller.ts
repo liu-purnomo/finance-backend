@@ -168,4 +168,43 @@ export class TransactionController {
             next(error);
         }
     }
+
+    static async update(req: Request, res: Response, next: NextFunction) {
+        const transaction = await sequelize.transaction();
+        try {
+            const { id } = req.params;
+            const { amount, description } = req.body;
+            const { userId } = (req as any).user;
+            const Transaction = await TransactionService.detail(id, userId);
+            if (!Transaction) throw notFoundError('Transaction');
+
+            const Wallet = await WalletService.detail(Transaction.walletId, userId);
+            if (!Wallet) throw notFoundError('Wallet');
+
+            let balance = Number(Wallet.balance);
+
+            if (Transaction.amount !== amount) {
+                if (transaction.type === 'EXPENSE') {
+                    balance = Number(Wallet.balance) + Number(Transaction.amount) - Number(amount);
+                } else {
+                    balance = Number(Wallet.balance) + Number(amount) - Number(Transaction.amount);
+                    if (balance < 0) throw customError(400, 'Insufficient balance');
+                }
+            }
+
+            await WalletService.update(Transaction.walletId, userId, { balance }, transaction);
+            await TransactionService.update(id, userId, { amount, description }, transaction);
+
+            const response = {
+                status: 'success',
+                message: 'Data updated successfully'
+            };
+
+            await transaction.commit();
+            res.status(200).json(response);
+        } catch (error) {
+            await transaction.rollback();
+            next(error);
+        }
+    }
 }
