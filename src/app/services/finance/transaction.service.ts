@@ -1,4 +1,4 @@
-import { Transaction as SequelizeTransaction } from 'sequelize';
+import { Op, Transaction as SequelizeTransaction } from 'sequelize';
 import { whereFilter } from '../../../helpers/utils';
 import { IDefaultQueryProps } from '../../../interfaces/default';
 
@@ -90,6 +90,18 @@ export class TransactionService {
             order: sortOption,
             include: defaultInclude,
             subQuery: false
+        });
+    }
+
+    static async summary(walletId: string, startDate: Date, endDate: Date) {
+        return await Transaction.findAll({
+            where: {
+                walletId,
+                createdAt: {
+                    [Op.gte]: startDate,
+                    [Op.lte]: endDate
+                }
+            }
         });
     }
 
