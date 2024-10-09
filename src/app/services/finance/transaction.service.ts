@@ -84,7 +84,7 @@ export class TransactionService {
         return await Transaction.findAll({
             where: {
                 walletId,
-                createdAt: {
+                transactionDate: {
                     [Op.gte]: startDate,
                     [Op.lte]: endDate
                 }
@@ -92,6 +92,10 @@ export class TransactionService {
             include: {
                 model: Category,
                 attributes: ['id', 'icon', 'name']
+            },
+            order: [['transactionDate', 'DESC']],
+            attributes: {
+                exclude: ['categoryId', 'walletId', 'userId', 'createdAt', 'updatedAt']
             }
         });
     }

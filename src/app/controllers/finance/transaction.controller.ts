@@ -99,14 +99,32 @@ export class TransactionController {
                     throw new Error('Invalid period');
             }
 
-            const Transaction = await TransactionService.summary(walletId, startDate, endDate);
+            const Transactions = await TransactionService.summary(walletId, startDate, endDate);
+
+            const Summary = Transactions.reduce((acc: any, transaction: any) => {
+                const categoryName = transaction.Category.name;
+
+                if (!acc[categoryName]) {
+                    acc[categoryName] = {
+                        name: categoryName,
+                        type: transaction.type,
+                        icon: transaction.Category.icon,
+                        amount: 0
+                    };
+                }
+
+                acc[categoryName].amount += parseFloat(transaction.amount);
+
+                return acc;
+            }, {});
 
             const response = {
                 status: 'success',
                 message: 'Data retrieved successfully',
                 data: {
                     Wallet,
-                    Transactions: Transaction
+                    Transactions,
+                    Summary: Object.values(Summary)
                 }
             };
 

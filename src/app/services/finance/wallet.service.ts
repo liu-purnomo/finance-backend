@@ -38,7 +38,10 @@ export class WalletService {
 
     static async detail(id: string, userId: string) {
         return await Wallet.findOne({
-            where: { id, userId }
+            where: { id, userId },
+            attributes: {
+                exclude: ['userId', 'createdAt', 'updatedAt']
+            }
         });
     }
 
