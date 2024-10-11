@@ -30,6 +30,15 @@ module.exports = {
                 allowNull: false,
                 defaultValue: false
             },
+            firstDayOfWeek: {
+                type: Sequelize.STRING
+            },
+            firstDayOfTheMonth: {
+                type: Sequelize.INTEGER
+            },
+            firstMonthOfTheYear: {
+                type: Sequelize.STRING
+            },
             createdAt: {
                 allowNull: false,
                 type: Sequelize.DATE

@@ -125,41 +125,6 @@ Please read full documentation at [https://personal-finance.apidog.io/](https://
    npx sequelize-cli db:migrate
    ```
 
-## API Endpoints
-
-### User Authentication
-
-- **POST** `/api/auth/register`: Register a new user.
-- **POST** `/api/auth/login`: Log in a user and get a JWT token.
-
-### Wallet Management
-
-- **GET** `/api/wallets`: Get all wallets for the authenticated user.
-- **POST** `/api/wallets`: Create a new wallet.
-- **PUT** `/api/wallets/:id`: Update wallet information.
-- **DELETE** `/api/wallets/:id`: Delete a wallet.
-
-### Transaction Management
-
-- **GET** `/api/transactions`: Get all transactions for a wallet.
-- **POST** `/api/transactions`: Create a new transaction.
-- **PUT** `/api/transactions/:id`: Update a transaction.
-- **DELETE** `/api/transactions/:id`: Delete a transaction.
-
-### Budget Goals
-
-- **GET** `/api/budgets`: Get all budgets for the authenticated user.
-- **POST** `/api/budgets`: Create a new budget.
-- **PUT** `/api/budgets/:id`: Update a budget.
-- **DELETE** `/api/budgets/:id`: Delete a budget.
-
-### Saving Goals
-
-- **GET** `/api/saving-goals`: Get all saving goals for the authenticated user.
-- **POST** `/api/saving-goals`: Create a new saving goal.
-- **PUT** `/api/saving-goals/:id`: Update a saving goal.
-- **DELETE** `/api/saving-goals/:id`: Delete a saving goal.
-
 ## Technologies Used
 
 - **ExpressJS**: Web framework for building the API.

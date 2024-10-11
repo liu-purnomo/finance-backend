@@ -22,8 +22,14 @@ module.exports = {
                 type: Sequelize.ENUM,
                 values: ['INCOME', 'EXPENSE']
             },
-            category: {
-                type: Sequelize.STRING
+            categoryId: {
+                type: Sequelize.UUID,
+                allowNull: false,
+                references: {
+                    model: 'Categories',
+                    key: 'id'
+                },
+                onDelete: 'CASCADE'
             },
             walletId: {
                 type: Sequelize.UUID,
