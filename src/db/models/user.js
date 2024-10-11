@@ -19,6 +19,11 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'userId',
                 onDelete: 'CASCADE'
             });
+
+            User.hasMany(models.Category, {
+                foreignKey: 'userId',
+                onDelete: 'CASCADE'
+            });
         }
     }
     User.init(
@@ -52,6 +57,18 @@ module.exports = (sequelize, DataTypes) => {
             isVerified: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false
+            },
+            firstDayOfWeek: {
+                type: DataTypes.STRING,
+                defaultValue: 'Monday'
+            },
+            firstDayOfTheMonth: {
+                type: DataTypes.INTEGER,
+                defaultValue: 1
+            },
+            firstMonthOfTheYear: {
+                type: DataTypes.STRING,
+                defaultValue: 'January'
             }
         },
         {

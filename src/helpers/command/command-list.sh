@@ -16,6 +16,10 @@ npm i -g sequelize-cli nodemon
 #    - `password` - String
 #    - `token` - String
 #    - `isVerified` - Boolean
+#    - `firstDayOfWeek` - String
+#    - `firstDayOfTheMonth` - String
+#    - `firstMonthOfTheYear` - String
+
 #    - `createdAt` - Timestamp
 #    - `updatedAt` - Timestamp
 
@@ -45,7 +49,11 @@ sequelize model:create --name Wallet --attributes name:string,balance:decimal,cu
 #    - `createdAt` - Timestamp
 #    - `updatedAt` - Timestamp
 
-sequelize model:create --name Transaction --attributes amount:decimal,description:string,transactionDate:date,type:enum,category:string,walletId:uuid,userId:uuid
+sequelize model:create --name Category --attributes name:string
+
+sequelize model:create --name SubCategory --attributes name:string,categoryId:uuid
+
+sequelize model:create --name Transaction --attributes amount:decimal,description:string,transactionDate:date,type:enum,subCatgeoryId:uuid,walletId:uuid,userId:uuid
 
 # 4. **Budget**
 #    - `id` (PK) - UUID
@@ -59,7 +67,7 @@ sequelize model:create --name Transaction --attributes amount:decimal,descriptio
 #    - `createdAt` - Timestamp
 #    - `updatedAt` - Timestamp
 
-sequelize model:create --name Budget --attributes name:string,description:text,amount:decimal,startDate:date,endDate:date,category:string,userId:uuid
+sequelize model:create --name Budget --attributes name:string,description:text,amount:decimal,startDate:date,endDate:date,subCategoryId:uuid,userId:uuid
 
 # 5. **SavingGoal**
 #    - `id` (PK) - UUID

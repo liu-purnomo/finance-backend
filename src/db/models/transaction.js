@@ -20,6 +20,11 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'userId',
                 onDelete: 'CASCADE'
             });
+
+            Transaction.belongsTo(models.Category, {
+                foreignKey: 'categoryId',
+                onDelete: 'CASCADE'
+            });
         }
     }
     Transaction.init(
@@ -45,9 +50,26 @@ module.exports = (sequelize, DataTypes) => {
                     field: 'Type'
                 })
             },
-            category: DataTypes.STRING,
+            categoryId: {
+                type: DataTypes.UUID,
+                ...validation({
+                    field: 'Category'
+                })
+            },
             walletId: DataTypes.UUID,
-            userId: DataTypes.UUID
+            userId: DataTypes.UUID,
+            category: {
+                type: DataTypes.VIRTUAL,
+                get() {
+                    return this?.Category?.name;
+                }
+            },
+            icon: {
+                type: DataTypes.VIRTUAL,
+                get() {
+                    return this?.Category?.icon;
+                }
+            }
         },
         {
             sequelize,
