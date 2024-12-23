@@ -297,4 +297,60 @@ Click here to reset your password: ${url}
             next(error);
         }
     }
+
+    static async resendCode(req: Request, res: Response, next: NextFunction) {
+        const transaction = await sequelize.transaction();
+        try {
+            const { email } = req.body;
+            if (!email) {
+                throw requireError('Email');
+            }
+
+            const user = await UserService.findByEmail(email);
+            if (!user) {
+                throw customError(400, 'Invalid Email');
+            }
+
+            if (user?.isVerified) {
+                throw customError(400, 'Email already verified');
+            }
+
+            const token = Generator.key({
+                length: 4,
+                isUppercase: true,
+                isLowercase: false
+            });
+
+            await UserService.update(user?.id, { token: token }, transaction);
+
+            const url = `${process.env.SITE_URL}/auth/verify?email=${email}&code=${token}`;
+
+            const emailContent = notificationEmail({
+                buttonUrl: url,
+                receiver: user.name,
+                message: `<b>${token}</b> is your code.
+<br/>    
+<br/>    
+Click here to verify your account: ${url}
+          `
+            });
+
+            await sendEmail({
+                email: email,
+                subject: 'Verify your account',
+                content: emailContent
+            });
+
+            const response = {
+                status: 'success',
+                message: 'Email verification has been sent to your email'
+            };
+
+            transaction.commit();
+            res.status(200).json(response);
+        } catch (error) {
+            await transaction.rollback();
+            next(error);
+        }
+    }
 }
