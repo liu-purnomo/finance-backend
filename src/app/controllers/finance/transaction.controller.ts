@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { customError, notFoundError, requireError } from '../../../helpers/errors';
 import { DateHelper } from '../../../helpers/utils';
-import { TransactionService, UserService, WalletService } from '../../services';
+import { CategoryService, TransactionService, UserService, WalletService } from '../../services';
 
 const { sequelize } = require('../../../db/models');
 
@@ -10,9 +10,13 @@ export class TransactionController {
         const transaction = await sequelize.transaction();
         try {
             const { userId } = (req as any).user;
-            const { walletId, amount, description, transactionDate, type, categoryId } = req.body;
+            const { walletId, amount, description, transactionDate, categoryId } = req.body;
 
-            const isExpense = type === 'EXPENSE';
+            const category = await CategoryService.detail(categoryId, userId);
+
+            if (!category) throw notFoundError('Category');
+
+            const isExpense = category?.type === 'EXPENSE';
 
             if (!amount || amount <= 0) throw requireError('Amount');
             if (!walletId) throw requireError('Wallet');
@@ -33,7 +37,7 @@ export class TransactionController {
             await WalletService.update(walletId, userId, { balance }, transaction);
 
             await TransactionService.create(
-                { walletId, amount, description, transactionDate, type, categoryId, userId },
+                { walletId, amount, description, transactionDate, categoryId, userId },
                 transaction
             );
 
@@ -145,9 +149,13 @@ export class TransactionController {
             const Wallet = await WalletService.detail(Transaction.walletId, userId);
             if (!Wallet) throw notFoundError('Wallet');
 
+            const Category = await CategoryService.detail(Transaction?.categoryId, userId);
+
+            if (!Category) throw notFoundError('Category');
+
             let balance = 0;
 
-            if (Transaction.type === 'EXPENSE') {
+            if (Category?.type === 'EXPENSE') {
                 balance = Number(Wallet.balance) + Number(Transaction.amount);
             } else {
                 balance = Number(Wallet.balance) - Number(Transaction.amount);
@@ -183,8 +191,12 @@ export class TransactionController {
 
             let balance = Number(Wallet.balance);
 
+            const Category = await CategoryService.detail(Transaction?.categoryId, userId);
+
+            if (!Category) throw notFoundError('Category');
+
             if (Transaction.amount !== amount) {
-                if (transaction.type === 'EXPENSE') {
+                if (Category.type === 'EXPENSE') {
                     balance = Number(Wallet.balance) + Number(Transaction.amount) - Number(amount);
                 } else {
                     balance = Number(Wallet.balance) + Number(amount) - Number(Transaction.amount);

@@ -59,7 +59,10 @@ export class WalletService {
             distinct: true,
             order: sortOption,
             // include: defaultInclude,
-            subQuery: false
+            subQuery: false,
+            attributes: {
+                exclude: ['userId']
+            }
         });
     }
 

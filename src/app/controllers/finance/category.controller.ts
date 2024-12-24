@@ -8,11 +8,11 @@ export class CategoryController {
     static async create(req: Request, res: Response, next: NextFunction) {
         const transaction = await sequelize.transaction();
         try {
-            const { name, icon } = req.body;
+            const { name, icon, type } = req.body;
 
             const { userId } = (req as any).user;
 
-            await CategoryService.create({ name, icon, userId }, transaction);
+            await CategoryService.create({ name, icon, type, userId }, transaction);
 
             const response = {
                 status: 'success',
@@ -32,13 +32,13 @@ export class CategoryController {
         try {
             const { userId } = (req as any).user;
             const { id } = req.params;
-            const { name, icon } = req.body;
+            const { name, icon, type } = req.body;
 
             const isExists = await CategoryService.detail(id, userId);
 
             if (!isExists) throw errorList.notFound;
 
-            await CategoryService.update(id, userId, { name, icon }, transaction);
+            await CategoryService.update(id, userId, { name, type, icon }, transaction);
 
             const response = {
                 status: 'success',
@@ -73,7 +73,7 @@ export class CategoryController {
 
     static async index(req: Request, res: Response, next: NextFunction) {
         try {
-            const { page, size, search, sort, order, name } = req.query;
+            const { page, size, search, type, sort, order, name } = req.query;
             const { userId } = (req as any).user;
 
             const limit = size ? Number(size) : 10;
@@ -84,6 +84,7 @@ export class CategoryController {
                 offset,
                 search,
                 name,
+                type,
                 userId,
                 order: order ? order : 'DESC',
                 sort: sort ? sort : 'createdAt'

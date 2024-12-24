@@ -18,10 +18,6 @@ module.exports = {
             transactionDate: {
                 type: Sequelize.DATE
             },
-            type: {
-                type: Sequelize.ENUM,
-                values: ['INCOME', 'EXPENSE']
-            },
             categoryId: {
                 type: Sequelize.UUID,
                 allowNull: false,
@@ -33,6 +29,7 @@ module.exports = {
             },
             walletId: {
                 type: Sequelize.UUID,
+                allowNull: false,
                 references: {
                     model: 'Wallets',
                     key: 'id'
@@ -41,6 +38,7 @@ module.exports = {
             },
             userId: {
                 type: Sequelize.UUID,
+                allowNull: false,
                 references: {
                     model: 'Users',
                     key: 'id'

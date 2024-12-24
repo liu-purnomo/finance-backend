@@ -8,10 +8,12 @@ interface ICreateProps {
     name: string;
     icon: string;
     userId: string;
+    type: string;
 }
 
 interface IGetAllProps extends IDefaultQueryProps {
     name?: string;
+    type?: string;
     userId: string;
 }
 
@@ -36,9 +38,9 @@ export class CategoryService {
     }
 
     static async index(query: IGetAllProps) {
-        const { limit, offset, order, sort, search, name, userId } = query;
+        const { limit, offset, order, sort, type, search, name, userId } = query;
 
-        const where = whereFilter({ search, dataToFilter: { name, userId } });
+        const where = whereFilter({ search, dataToFilter: { name, type, userId } });
 
         const sortOption = [[sort, order]];
 
@@ -53,7 +55,7 @@ export class CategoryService {
     }
 
     static async getAll(userId: string) {
-        return await Category.findAll({ where: { userId }, attributes: ['id', 'name'] });
+        return await Category.findAll({ where: { userId }, attributes: ['id', 'type', 'name'] });
     }
 
     static async delete(id: string, userId: string, transaction: Transaction) {

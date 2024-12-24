@@ -1,5 +1,6 @@
 'use strict';
-const { Model } = require('sequelize');
+
+import { Model } from 'sequelize';
 const { validation } = require('../helpers');
 module.exports = (sequelize, DataTypes) => {
     class Category extends Model {
@@ -38,6 +39,13 @@ module.exports = (sequelize, DataTypes) => {
             },
             icon: {
                 type: DataTypes.STRING
+            },
+            type: {
+                type: DataTypes.ENUM,
+                values: ['INCOME', 'EXPENSE', 'DEBT'],
+                ...validation({
+                    field: 'Type'
+                })
             },
             userId: DataTypes.UUID
         },

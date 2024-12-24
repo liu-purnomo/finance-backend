@@ -1,5 +1,5 @@
 'use strict';
-const { Model } = require('sequelize');
+import { Model } from 'sequelize';
 const { validation } = require('../helpers');
 module.exports = (sequelize, DataTypes) => {
     class Wallet extends Model {

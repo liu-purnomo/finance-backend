@@ -8,7 +8,6 @@ interface ICreateProps {
     amount: number;
     description?: string;
     transactionDate: Date;
-    type: string;
     categoryId: string;
     walletId: string;
     userId: string;
@@ -20,6 +19,7 @@ interface IGetAllProps extends IDefaultQueryProps {
     userId: string;
     category?: string;
     subCategory?: string;
+    type?: string;
 }
 
 const defaultInclude = [
@@ -29,7 +29,7 @@ const defaultInclude = [
     },
     {
         model: Category,
-        attributes: ['id', 'name', 'icon']
+        attributes: ['id', 'name', 'type', 'icon']
     }
 ];
 
@@ -55,7 +55,8 @@ export class TransactionService {
     }
 
     static async index(query: IGetAllProps) {
-        const { limit, offset, order, sort, search, userId, wallet, description, category } = query;
+        const { limit, offset, order, sort, search, userId, type, wallet, description, category } =
+            query;
 
         const where = whereFilter({
             search,
@@ -63,7 +64,8 @@ export class TransactionService {
                 userId,
                 '$wallet.name$': wallet,
                 description,
-                '$Category.name$': category
+                '$Category.name$': category,
+                '$Category.type$': type
             }
         });
 

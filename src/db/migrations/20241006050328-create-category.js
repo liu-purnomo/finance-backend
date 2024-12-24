@@ -15,6 +15,10 @@ module.exports = {
             icon: {
                 type: Sequelize.STRING
             },
+            type: {
+                type: Sequelize.ENUM,
+                values: ['INCOME', 'EXPENSE']
+            },
             userId: {
                 type: Sequelize.UUID,
                 allowNull: false,
