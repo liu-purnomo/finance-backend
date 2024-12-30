@@ -25,11 +25,15 @@ interface IGetAllProps extends IDefaultQueryProps {
 const defaultInclude = [
     {
         model: Wallet,
-        attributes: ['id', 'name']
+        attributes: {
+            exclude: ['createdAt', 'updatedAt', 'userId']
+        }
     },
     {
         model: Category,
-        attributes: ['id', 'name', 'type', 'icon']
+        attributes: {
+            exclude: ['createdAt', 'updatedAt', 'userId']
+        }
     }
 ];
 

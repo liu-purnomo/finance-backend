@@ -67,7 +67,10 @@ export class WalletService {
     }
 
     static async getAll(userId: string) {
-        return await Wallet.findAll({ where: { userId }, attributes: ['id', 'type', 'name'] });
+        return await Wallet.findAll({
+            where: { userId },
+            attributes: ['id', 'type', 'name', 'currency']
+        });
     }
 
     static async delete(id: string, userId: string, transaction: Transaction) {

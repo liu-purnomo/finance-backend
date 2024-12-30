@@ -55,7 +55,10 @@ export class CategoryService {
     }
 
     static async getAll(userId: string) {
-        return await Category.findAll({ where: { userId }, attributes: ['id', 'type', 'name'] });
+        return await Category.findAll({
+            where: { userId },
+            attributes: ['id', 'type', 'name', 'icon']
+        });
     }
 
     static async delete(id: string, userId: string, transaction: Transaction) {

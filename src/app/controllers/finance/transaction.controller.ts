@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { customError, notFoundError, requireError } from '../../../helpers/errors';
-import { DateHelper } from '../../../helpers/utils';
+import { DateHelper, indexResponse } from '../../../helpers/utils';
 import { CategoryService, TransactionService, UserService, WalletService } from '../../services';
 
 const { sequelize } = require('../../../db/models');
@@ -131,6 +131,35 @@ export class TransactionController {
                     Summary: Object.values(Summary)
                 }
             };
+
+            res.status(200).json(response);
+        } catch (error) {
+            next(error);
+        }
+    }
+    static async index(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { page, size, search, type, sort, order, wallet, description, category } =
+                req.query;
+            const { userId } = (req as any).user;
+
+            const limit = size ? Number(size) : 10;
+            const offset = page ? (Number(page) - 1) * limit : 0;
+
+            const data = await TransactionService.index({
+                limit,
+                offset,
+                search,
+                wallet,
+                type,
+                userId,
+                description,
+                category,
+                order: order ? order : 'DESC',
+                sort: sort ? sort : 'createdAt'
+            } as any);
+
+            const response = indexResponse(data, page, limit);
 
             res.status(200).json(response);
         } catch (error) {
