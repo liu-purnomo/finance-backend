@@ -103,7 +103,7 @@ export class TransactionController {
                     throw new Error('Invalid period');
             }
 
-            const Transactions = await TransactionService.summary(walletId, startDate, endDate);
+            const Transactions = await TransactionService.summaryAll(walletId, startDate, endDate);
 
             const Summary = Transactions.reduce((acc: any, transaction: any) => {
                 const categoryName = transaction.Category.name;
@@ -129,6 +129,123 @@ export class TransactionController {
                     Wallet,
                     Transactions,
                     Summary: Object.values(Summary)
+                }
+            };
+
+            res.status(200).json(response);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    static async getSummaryTransaction(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { userId } = (req as any).user;
+            const { period = 'weekly' } = req.query;
+
+            const UserConfig = await UserService.findById(userId);
+
+            const currentDate = new Date();
+            //set time to 00.00.00
+            currentDate.setHours(0, 0, 0, 0);
+
+            let startDate: Date;
+            let endDate: Date;
+
+            // Parsing UserConfig for custom settings
+            const { firstDayOfWeek, firstDayOfTheMonth, firstMonthOfTheYear } = UserConfig;
+
+            // Determine startDate and endDate based on period (weekly, monthly, yearly)
+            switch (period) {
+                case 'weekly':
+                    // Start from firstDayOfWeek
+                    const firstDay = DateHelper.getFirstDayOfWeek(currentDate, firstDayOfWeek);
+                    startDate = new Date(firstDay);
+                    endDate = new Date(firstDay);
+                    endDate.setDate(startDate.getDate() + 6); // End of the week
+                    break;
+
+                case 'monthly':
+                    // Start from firstDayOfTheMonth
+                    startDate = new Date(
+                        currentDate.getFullYear(),
+                        currentDate.getMonth(),
+                        firstDayOfTheMonth
+                    );
+                    endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0); // End of the month
+                    break;
+
+                case 'yearly':
+                    // Start from firstMonthOfTheYear and firstDayOfTheMonth
+                    const firstMonth = DateHelper.getMonthFromName(firstMonthOfTheYear);
+                    startDate = new Date(currentDate.getFullYear(), firstMonth, firstDayOfTheMonth);
+                    endDate = new Date(startDate.getFullYear() + 1, firstMonth, 0); // End of the year
+                    break;
+
+                default:
+                    throw new Error('Invalid period');
+            }
+
+            const Transactions = await TransactionService.summaryAll(userId, startDate, endDate);
+
+            const Wallets = await WalletService.getAll(userId);
+
+            const SummaryTransaction: any = {};
+
+            Transactions?.forEach((transaction: any) => {
+                const categoryName = transaction.Category.name;
+
+                if (!SummaryTransaction[categoryName]) {
+                    SummaryTransaction[categoryName] = {
+                        name: categoryName,
+                        type: transaction.type,
+                        icon: transaction.Category.icon,
+                        amount: 0
+                    };
+                }
+
+                SummaryTransaction[categoryName].amount += parseFloat(transaction.amount);
+            });
+
+            const SummaryWallet: any = {};
+
+            Wallets?.forEach((wallet: any) => {
+                const currency = wallet.currency;
+
+                if (!SummaryWallet[currency]) {
+                    SummaryWallet[currency] = {
+                        currency,
+                        balance: 0
+                    };
+                }
+
+                SummaryWallet[currency].balance += parseFloat(wallet.balance);
+            });
+
+            Transactions.reduce((acc: any, transaction: any) => {
+                const categoryName = transaction.Category.name;
+
+                if (!acc[categoryName]) {
+                    acc[categoryName] = {
+                        name: categoryName,
+                        type: transaction.type,
+                        icon: transaction.Category.icon,
+                        amount: 0
+                    };
+                }
+
+                acc[categoryName].amount += parseFloat(transaction.amount);
+
+                return acc;
+            }, {});
+
+            const response = {
+                status: 'success',
+                message: 'Data retrieved successfully',
+                data: {
+                    // userId,
+                    SummaryWallet: Object.values(SummaryWallet),
+                    SummaryTransaction: Object.values(SummaryTransaction)
                 }
             };
 

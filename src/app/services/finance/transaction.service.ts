@@ -132,6 +132,28 @@ export class TransactionService {
         });
     }
 
+    static async summaryAll(userId: string, startDate: Date, endDate: Date) {
+        return await Transaction.findAll({
+            where: {
+                userId,
+                transactionDate: {
+                    [Op.gte]: startDate,
+                    [Op.lte]: endDate
+                }
+            },
+            include: {
+                model: Category,
+                attributes: {
+                    exclude: ['userId', 'createdAt', 'updatedAt']
+                }
+            },
+            order: [['transactionDate', 'DESC']],
+            attributes: {
+                exclude: ['categoryId', 'walletId', 'userId', 'createdAt', 'updatedAt']
+            }
+        });
+    }
+
     static async getAll(userId: string) {
         return await Transaction.findAll({ where: { userId } });
     }

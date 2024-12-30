@@ -69,7 +69,7 @@ export class WalletService {
     static async getAll(userId: string) {
         return await Wallet.findAll({
             where: { userId },
-            attributes: ['id', 'type', 'name', 'currency']
+            attributes: ['id', 'type', 'name', 'currency', 'balance', 'description']
         });
     }
 
