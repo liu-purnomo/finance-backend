@@ -14,6 +14,7 @@ module.exports = {
             acquire: 30000,
             idle: 10000
         },
+        logging: false,
         benchmark: process.env.DB_BENCHMARK ? true : false,
         logging: (message, benchmark) => {
             if (process.env.DB_LOGGING) {
@@ -36,14 +37,14 @@ module.exports = {
         host: process.env.DB_HOST,
         port: process.env.DB_PORT,
         dialect: 'mysql',
-        logging: (message, benchmark) => {
-            if (process.env.DB_LOGGING) {
-                if (!benchmark) {
-                    return console.info(message);
-                }
-                console.info(`${message} Elapsed time: ${benchmark} ms`);
-            }
-        },
+        // logging: (message, benchmark) => {
+        //   if (process.env.DB_LOGGING) {
+        //     if (!benchmark) {
+        //       return console.info(message);
+        //     }
+        //     console.info(`${message} Elapsed time: ${benchmark} ms`);
+        //   }
+        // },
         pool: {
             max: 10,
             min: 0,
@@ -53,8 +54,8 @@ module.exports = {
         dialectOptions: {
             charset: 'utf8mb4'
             // collate: 'utf8mb4_unicode_ci',
-        },
-        benchmark: process.env.DB_BENCHMARK ? true : false
+        }
+        // benchmark: process.env.DB_BENCHMARK ? true : false,
     },
     production: {
         username: process.env.DB_USERNAME,
@@ -63,14 +64,15 @@ module.exports = {
         host: process.env.DB_HOST,
         port: process.env.DB_PORT,
         dialect: 'mysql',
-        logging: (message, benchmark) => {
-            if (process.env.DB_LOGGING) {
-                if (!benchmark) {
-                    return console.info(message);
-                }
-                console.info(`${message} Elapsed time: ${benchmark} ms`);
-            }
-        },
+        logging: false,
+        // logging: (message, benchmark) => {
+        //   if (process.env.DB_LOGGING) {
+        //     if (!benchmark) {
+        //       return console.info(message);
+        //     }
+        //     console.info(`${message} Elapsed time: ${benchmark} ms`);
+        //   }
+        // },
         pool: {
             max: 10,
             min: 0,
@@ -80,7 +82,7 @@ module.exports = {
         dialectOptions: {
             charset: 'utf8mb4'
             // collate: 'utf8mb4_unicode_ci',
-        },
-        benchmark: process.env.DB_BENCHMARK ? true : false
+        }
+        // benchmark: process.env.DB_BENCHMARK ? true : false,
     }
 };

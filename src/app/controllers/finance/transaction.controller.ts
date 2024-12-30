@@ -137,6 +137,7 @@ export class TransactionController {
             next(error);
         }
     }
+
     static async index(req: Request, res: Response, next: NextFunction) {
         try {
             const {
