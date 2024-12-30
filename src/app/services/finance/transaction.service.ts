@@ -15,11 +15,13 @@ interface ICreateProps {
 
 interface IGetAllProps extends IDefaultQueryProps {
     description?: string;
+    date?: string;
     wallet?: string;
     userId: string;
     category?: string;
-    subCategory?: string;
     type?: string;
+    amount?: string;
+    transactionDate?: string;
 }
 
 const defaultInclude = [
@@ -59,13 +61,27 @@ export class TransactionService {
     }
 
     static async index(query: IGetAllProps) {
-        const { limit, offset, order, sort, search, userId, type, wallet, description, category } =
-            query;
+        const {
+            limit,
+            offset,
+            order,
+            sort,
+            search,
+            userId,
+            transactionDate,
+            type,
+            wallet,
+            description,
+            category,
+            amount
+        } = query;
 
         const where = whereFilter({
             search,
             dataToFilter: {
                 userId,
+                amount,
+                transactionDate: transactionDate,
                 '$wallet.name$': wallet,
                 description,
                 '$Category.name$': category,
@@ -73,7 +89,17 @@ export class TransactionService {
             }
         });
 
-        const sortOption = [[sort, order]];
+        const sortOption = [];
+
+        if (sort === 'category') {
+            sortOption.push([Category, 'name', order]);
+        } else if (sort === 'type') {
+            sortOption.push([Category, 'type', order]);
+        } else if (sort === 'wallet') {
+            sortOption.push([Wallet, 'name', order]);
+        } else {
+            sortOption.push([sort, order]);
+        }
 
         return await Transaction.findAndCountAll({
             where,

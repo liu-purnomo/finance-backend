@@ -139,8 +139,19 @@ export class TransactionController {
     }
     static async index(req: Request, res: Response, next: NextFunction) {
         try {
-            const { page, size, search, type, sort, order, wallet, description, category } =
-                req.query;
+            const {
+                page,
+                size,
+                search,
+                type,
+                sort,
+                order,
+                wallet,
+                transactionDate,
+                description,
+                category,
+                amount
+            } = req.query;
             const { userId } = (req as any).user;
 
             const limit = size ? Number(size) : 10;
@@ -155,6 +166,8 @@ export class TransactionController {
                 userId,
                 description,
                 category,
+                transactionDate,
+                amount,
                 order: order ? order : 'DESC',
                 sort: sort ? sort : 'createdAt'
             } as any);
