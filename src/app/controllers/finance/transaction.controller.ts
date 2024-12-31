@@ -3,7 +3,7 @@ import { customError, notFoundError, requireError } from '../../../helpers/error
 import { DateHelper, indexResponse } from '../../../helpers/utils';
 import { CategoryService, TransactionService, UserService, WalletService } from '../../services';
 
-const { sequelize } = require('../../../db/models');
+const { sequelize, Sequelize } = require('../../../db/models');
 
 export class TransactionController {
     static async create(req: Request, res: Response, next: NextFunction) {
@@ -44,6 +44,102 @@ export class TransactionController {
             const response = {
                 status: 'success',
                 message: 'Data created successfully'
+            };
+
+            await transaction.commit();
+            res.status(200).json(response);
+        } catch (error) {
+            await transaction.rollback();
+            next(error);
+        }
+    }
+
+    static async transfer(req: Request, res: Response, next: NextFunction) {
+        const transaction = await sequelize.transaction({
+            isolationLevel: Sequelize.Transaction.ISOLATION_LEVELS.READ_COMMITTED
+        });
+
+        try {
+            const { userId } = (req as any).user;
+            const { originWalletId, destinationWalletId, amount, transactionDate } = req.body;
+
+            if (!amount || amount <= 0) throw requireError('Amount');
+
+            const [outboundCategory, createdOutboundCategory] = await CategoryService.findOrCreate(
+                {
+                    name: 'Outbound Transfer',
+                    type: 'EXPENSE',
+                    userId: userId
+                },
+                transaction
+            );
+
+            const [inboundCategory, createdInboundCategory] = await CategoryService.findOrCreate(
+                {
+                    name: 'Inbound Transfer',
+                    type: 'INCOME',
+                    userId: userId
+                },
+                transaction
+            );
+
+            if (!originWalletId || !destinationWalletId) throw requireError('Wallet');
+
+            const originWallet = await WalletService.detail(originWalletId, userId);
+            const destinationWallet = await WalletService.detail(destinationWalletId, userId);
+
+            if (!originWallet || !destinationWallet)
+                throw notFoundError('Origin or Destination Wallet');
+
+            if (originWalletId === destinationWalletId)
+                throw customError(400, 'Origin and Destination Wallet must be different');
+
+            if (originWallet.currency !== destinationWallet.currency)
+                throw customError(400, 'Currencies are not the same');
+
+            if (amount > originWallet.balance) throw customError(400, 'Insufficient balance');
+
+            await WalletService.update(
+                originWalletId,
+                userId,
+                { balance: Number(originWallet.balance) - Number(amount) },
+                transaction
+            );
+
+            await WalletService.update(
+                destinationWalletId,
+                userId,
+                { balance: Number(destinationWallet.balance) + Number(amount) },
+                transaction
+            );
+
+            await TransactionService.create(
+                {
+                    walletId: originWalletId,
+                    amount,
+                    description: `Transfer to ${destinationWallet.name}`,
+                    transactionDate,
+                    categoryId: outboundCategory.id,
+                    userId
+                },
+                transaction
+            );
+
+            await TransactionService.create(
+                {
+                    walletId: destinationWalletId,
+                    amount,
+                    description: `Transfer from ${originWallet.name}`,
+                    transactionDate,
+                    categoryId: inboundCategory.id,
+                    userId
+                },
+                transaction
+            );
+
+            const response = {
+                status: 'success',
+                message: 'Transfer successfully'
             };
 
             await transaction.commit();
@@ -141,59 +237,47 @@ export class TransactionController {
     static async getSummaryTransaction(req: Request, res: Response, next: NextFunction) {
         try {
             const { userId } = (req as any).user;
-            const { period = 'weekly' } = req.query;
+            const { start, end } = req.query;
 
-            const UserConfig = await UserService.findById(userId);
-
-            const currentDate = new Date();
-            //set time to 00.00.00
-            currentDate.setHours(0, 0, 0, 0);
-
-            let startDate: Date;
-            let endDate: Date;
-
-            // Parsing UserConfig for custom settings
-            const { firstDayOfWeek, firstDayOfTheMonth, firstMonthOfTheYear } = UserConfig;
-
-            // Determine startDate and endDate based on period (weekly, monthly, yearly)
-            switch (period) {
-                case 'weekly':
-                    // Start from firstDayOfWeek
-                    const firstDay = DateHelper.getFirstDayOfWeek(currentDate, firstDayOfWeek);
-                    startDate = new Date(firstDay);
-                    endDate = new Date(firstDay);
-                    endDate.setDate(startDate.getDate() + 6); // End of the week
-                    break;
-
-                case 'monthly':
-                    // Start from firstDayOfTheMonth
-                    startDate = new Date(
-                        currentDate.getFullYear(),
-                        currentDate.getMonth(),
-                        firstDayOfTheMonth
-                    );
-                    endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0); // End of the month
-                    break;
-
-                case 'yearly':
-                    // Start from firstMonthOfTheYear and firstDayOfTheMonth
-                    const firstMonth = DateHelper.getMonthFromName(firstMonthOfTheYear);
-                    startDate = new Date(currentDate.getFullYear(), firstMonth, firstDayOfTheMonth);
-                    endDate = new Date(startDate.getFullYear() + 1, firstMonth, 0); // End of the year
-                    break;
-
-                default:
-                    throw new Error('Invalid period');
-            }
-
-            const Transactions = await TransactionService.summaryAll(userId, startDate, endDate);
+            const Transactions = await TransactionService.summaryAll(
+                userId,
+                new Date(start as string),
+                new Date(end as string)
+            );
 
             const Wallets = await WalletService.getAll(userId);
+
+            const SummaryWallet: any = {};
+
+            Wallets?.forEach((wallet: any) => {
+                const currency = wallet.currency;
+
+                if (!SummaryWallet[currency]) {
+                    SummaryWallet[currency] = {
+                        currency,
+                        balance: 0,
+                        income: 0,
+                        expense: 0
+                    };
+                }
+
+                SummaryWallet[currency].balance += parseFloat(wallet.balance);
+            });
 
             const SummaryTransaction: any = {};
 
             Transactions?.forEach((transaction: any) => {
                 const categoryName = transaction.Category.name;
+
+                if (transaction.Category.type === 'INCOME') {
+                    SummaryWallet[transaction.Wallet.currency].income += parseFloat(
+                        transaction.amount
+                    );
+                } else {
+                    SummaryWallet[transaction.Wallet.currency].expense += parseFloat(
+                        transaction.amount
+                    );
+                }
 
                 if (!SummaryTransaction[categoryName]) {
                     SummaryTransaction[categoryName] = {
@@ -205,21 +289,6 @@ export class TransactionController {
                 }
 
                 SummaryTransaction[categoryName].amount += parseFloat(transaction.amount);
-            });
-
-            const SummaryWallet: any = {};
-
-            Wallets?.forEach((wallet: any) => {
-                const currency = wallet.currency;
-
-                if (!SummaryWallet[currency]) {
-                    SummaryWallet[currency] = {
-                        currency,
-                        balance: 0
-                    };
-                }
-
-                SummaryWallet[currency].balance += parseFloat(wallet.balance);
             });
 
             Transactions.reduce((acc: any, transaction: any) => {

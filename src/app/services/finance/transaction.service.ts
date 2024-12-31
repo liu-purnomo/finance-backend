@@ -132,7 +132,7 @@ export class TransactionService {
         });
     }
 
-    static async summaryAll(userId: string, startDate: Date, endDate: Date) {
+    static async summaryAll(userId: string, startDate: any, endDate: any) {
         return await Transaction.findAll({
             where: {
                 userId,
@@ -141,12 +141,20 @@ export class TransactionService {
                     [Op.lte]: endDate
                 }
             },
-            include: {
-                model: Category,
-                attributes: {
-                    exclude: ['userId', 'createdAt', 'updatedAt']
+            include: [
+                {
+                    model: Category,
+                    attributes: {
+                        exclude: ['userId', 'createdAt', 'updatedAt']
+                    }
+                },
+                {
+                    model: Wallet,
+                    attributes: {
+                        exclude: ['userId', 'createdAt', 'updatedAt']
+                    }
                 }
-            },
+            ],
             order: [['transactionDate', 'DESC']],
             attributes: {
                 exclude: ['categoryId', 'walletId', 'userId', 'createdAt', 'updatedAt']

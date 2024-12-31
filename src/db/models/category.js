@@ -38,7 +38,8 @@ module.exports = (sequelize, DataTypes) => {
                 })
             },
             icon: {
-                type: DataTypes.STRING
+                type: DataTypes.STRING,
+                defaultValue: 'wallet'
             },
             type: {
                 type: DataTypes.ENUM,

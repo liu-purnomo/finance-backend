@@ -22,6 +22,11 @@ export class CategoryService {
         return await Category.create(params, { transaction });
     }
 
+    //find or create category based on name and user id
+    static async findOrCreate(params: Partial<ICreateProps>, transaction: Transaction) {
+        return await Category.findOrCreate({ where: params, transaction });
+    }
+
     static async update(
         id: string,
         userId: string,
