@@ -24,6 +24,11 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'userId',
                 onDelete: 'CASCADE'
             });
+
+            User.hasMany(models.Budget, {
+                foreignKey: 'userId',
+                onDelete: 'CASCADE'
+            });
         }
     }
     User.init(
