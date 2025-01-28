@@ -1,9 +1,8 @@
 'use strict';
-
 import { Model } from 'sequelize';
 const { validation } = require('../helpers');
 module.exports = (sequelize, DataTypes) => {
-    class Category extends Model {
+    class Budget extends Model {
         /**
          * Helper method for defining associations.
          * This method is not a part of Sequelize lifecycle.
@@ -11,24 +10,18 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-
-            Category.belongsTo(models.User, {
+            Budget.belongsTo(models.User, {
                 foreignKey: 'userId',
                 onDelete: 'CASCADE'
             });
 
-            Category.hasMany(models.Transaction, {
-                foreignKey: 'categoryId',
-                onDelete: 'CASCADE'
-            });
-
-            Category.hasMany(models.Budget, {
+            Budget.belongsTo(models.Category, {
                 foreignKey: 'categoryId',
                 onDelete: 'CASCADE'
             });
         }
     }
-    Category.init(
+    Budget.init(
         {
             id: {
                 allowNull: false,
@@ -36,29 +29,37 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.UUID,
                 defaultValue: DataTypes.UUIDV4
             },
-            name: {
-                type: DataTypes.STRING,
+            description: DataTypes.TEXT,
+            amount: {
+                type: DataTypes.DECIMAL(15, 2),
                 ...validation({
-                    field: 'Name'
+                    field: 'Amount'
                 })
             },
-            icon: {
-                type: DataTypes.STRING,
-                defaultValue: 'wallet'
-            },
-            type: {
-                type: DataTypes.ENUM,
-                values: ['INCOME', 'EXPENSE', 'DEBT'],
+            periodStart: {
+                type: DataTypes.DATE,
                 ...validation({
-                    field: 'Type'
+                    field: 'Period Start'
+                })
+            },
+            periodEnd: {
+                type: DataTypes.DATE,
+                ...validation({
+                    field: 'Period End'
+                })
+            },
+            categoryId: {
+                type: DataTypes.UUID,
+                ...validation({
+                    field: 'Category'
                 })
             },
             userId: DataTypes.UUID
         },
         {
             sequelize,
-            modelName: 'Category'
+            modelName: 'Budget'
         }
     );
-    return Category;
+    return Budget;
 };
