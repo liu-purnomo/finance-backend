@@ -9,6 +9,9 @@ interface ICreateProps {
     password: string;
     token: string | null;
     isVerified: boolean;
+    firstDayOfWeek?: string;
+    firstDayOfTheMonth?: number;
+    firstMonthOfTheYear?: string;
 }
 
 interface IGetAllProps extends IDefaultQueryProps {
@@ -28,6 +31,15 @@ export class UserService {
     }
 
     static async findById(id: string) {
+        const user = await User.findByPk(id, {
+            attributes: {
+                exclude: ['password', 'token', 'updatedAt']
+            }
+        });
+        return user;
+    }
+
+    static async getMyProfile(id: string) {
         const user = await User.findByPk(id);
         return user;
     }
