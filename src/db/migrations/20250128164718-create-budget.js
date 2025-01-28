@@ -2,22 +2,35 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('Categories', {
+        await queryInterface.createTable('Budgets', {
             id: {
                 allowNull: false,
                 primaryKey: true,
                 type: Sequelize.UUID,
                 defaultValue: Sequelize.UUIDV4
             },
-            name: {
-                type: Sequelize.STRING
+            description: {
+                type: Sequelize.TEXT
             },
-            icon: {
-                type: Sequelize.STRING
+            amount: {
+                type: Sequelize.DECIMAL(15, 2)
             },
-            type: {
-                type: Sequelize.ENUM,
-                values: ['INCOME', 'EXPENSE']
+            periodStart: {
+                allowNull: false,
+                type: Sequelize.DATE
+            },
+            periodEnd: {
+                allowNull: false,
+                type: Sequelize.DATE
+            },
+            categoryId: {
+                type: Sequelize.UUID,
+                allowNull: false,
+                references: {
+                    model: 'Categories',
+                    key: 'id'
+                },
+                onDelete: 'CASCADE'
             },
             userId: {
                 type: Sequelize.UUID,
@@ -39,6 +52,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('Categories');
+        await queryInterface.dropTable('Budgets');
     }
 };

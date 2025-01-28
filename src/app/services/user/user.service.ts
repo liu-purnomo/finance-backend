@@ -28,7 +28,8 @@ export class UserService {
     }
 
     static async findById(id: string) {
-        return await User.findByPk(id);
+        const user = await User.findByPk(id);
+        return user;
     }
 
     static async findByEmail(email: string) {

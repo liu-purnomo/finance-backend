@@ -67,7 +67,7 @@ sequelize model:create --name Transaction --attributes amount:decimal,descriptio
 #    - `createdAt` - Timestamp
 #    - `updatedAt` - Timestamp
 
-sequelize model:create --name Budget --attributes name:string,description:text,amount:decimal,startDate:date,endDate:date,subCategoryId:uuid,userId:uuid
+sequelize model:create --name Budget --attributes description:text,amount:decimal,periodStart:date,periodEnd:date,categoryId:uuid,userId:uuid
 
 # 5. **SavingGoal**
 #    - `id` (PK) - UUID

@@ -59,12 +59,18 @@ export class WalletService {
             distinct: true,
             order: sortOption,
             // include: defaultInclude,
-            subQuery: false
+            subQuery: false,
+            attributes: {
+                exclude: ['userId']
+            }
         });
     }
 
     static async getAll(userId: string) {
-        return await Wallet.findAll({ where: { userId }, attributes: ['id', 'type', 'name'] });
+        return await Wallet.findAll({
+            where: { userId },
+            attributes: ['id', 'type', 'name', 'currency', 'balance', 'description']
+        });
     }
 
     static async delete(id: string, userId: string, transaction: Transaction) {

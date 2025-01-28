@@ -1,5 +1,5 @@
 'use strict';
-const { Model } = require('sequelize');
+import { Model } from 'sequelize';
 const { validation } = require('../helpers');
 module.exports = (sequelize, DataTypes) => {
     class User extends Model {
@@ -21,6 +21,11 @@ module.exports = (sequelize, DataTypes) => {
             });
 
             User.hasMany(models.Category, {
+                foreignKey: 'userId',
+                onDelete: 'CASCADE'
+            });
+
+            User.hasMany(models.Budget, {
                 foreignKey: 'userId',
                 onDelete: 'CASCADE'
             });

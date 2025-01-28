@@ -2,7 +2,7 @@
 import { Model } from 'sequelize';
 const { validation } = require('../helpers');
 module.exports = (sequelize, DataTypes) => {
-    class Wallet extends Model {
+    class Budget extends Model {
         /**
          * Helper method for defining associations.
          * This method is not a part of Sequelize lifecycle.
@@ -10,19 +10,18 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-
-            Wallet.belongsTo(models.User, {
+            Budget.belongsTo(models.User, {
                 foreignKey: 'userId',
                 onDelete: 'CASCADE'
             });
 
-            Wallet.hasMany(models.Transaction, {
-                foreignKey: 'walletId',
+            Budget.belongsTo(models.Category, {
+                foreignKey: 'categoryId',
                 onDelete: 'CASCADE'
             });
         }
     }
-    Wallet.init(
+    Budget.init(
         {
             id: {
                 allowNull: false,
@@ -30,36 +29,37 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.UUID,
                 defaultValue: DataTypes.UUIDV4
             },
-            type: {
-                type: DataTypes.STRING,
-                ...validation({
-                    field: 'Type'
-                })
-            },
-            name: {
-                type: DataTypes.STRING,
-                ...validation({
-                    field: 'Name'
-                })
-            },
-            balance: {
-                type: DataTypes.DECIMAL(15, 2),
-                defaultValue: 0,
-                ...validation({
-                    field: 'Balance'
-                })
-            },
-            currency: {
-                type: DataTypes.STRING,
-                defaultValue: 'IDR'
-            },
             description: DataTypes.TEXT,
+            amount: {
+                type: DataTypes.DECIMAL(15, 2),
+                ...validation({
+                    field: 'Amount'
+                })
+            },
+            periodStart: {
+                type: DataTypes.DATE,
+                ...validation({
+                    field: 'Period Start'
+                })
+            },
+            periodEnd: {
+                type: DataTypes.DATE,
+                ...validation({
+                    field: 'Period End'
+                })
+            },
+            categoryId: {
+                type: DataTypes.UUID,
+                ...validation({
+                    field: 'Category'
+                })
+            },
             userId: DataTypes.UUID
         },
         {
             sequelize,
-            modelName: 'Wallet'
+            modelName: 'Budget'
         }
     );
-    return Wallet;
+    return Budget;
 };

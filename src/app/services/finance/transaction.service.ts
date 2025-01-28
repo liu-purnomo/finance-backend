@@ -8,7 +8,6 @@ interface ICreateProps {
     amount: number;
     description?: string;
     transactionDate: Date;
-    type: string;
     categoryId: string;
     walletId: string;
     userId: string;
@@ -16,20 +15,27 @@ interface ICreateProps {
 
 interface IGetAllProps extends IDefaultQueryProps {
     description?: string;
+    date?: string;
     wallet?: string;
     userId: string;
     category?: string;
-    subCategory?: string;
+    type?: string;
+    amount?: string;
+    transactionDate?: string;
 }
 
 const defaultInclude = [
     {
         model: Wallet,
-        attributes: ['id', 'name']
+        attributes: {
+            exclude: ['createdAt', 'updatedAt', 'userId']
+        }
     },
     {
         model: Category,
-        attributes: ['id', 'name', 'icon']
+        attributes: {
+            exclude: ['createdAt', 'updatedAt', 'userId']
+        }
     }
 ];
 
@@ -55,19 +61,45 @@ export class TransactionService {
     }
 
     static async index(query: IGetAllProps) {
-        const { limit, offset, order, sort, search, userId, wallet, description, category } = query;
+        const {
+            limit,
+            offset,
+            order,
+            sort,
+            search,
+            userId,
+            transactionDate,
+            type,
+            wallet,
+            description,
+            category,
+            amount
+        } = query;
 
         const where = whereFilter({
             search,
             dataToFilter: {
                 userId,
+                amount,
+                transactionDate: transactionDate,
                 '$wallet.name$': wallet,
                 description,
-                '$Category.name$': category
+                '$Category.name$': category,
+                '$Category.type$': type
             }
         });
 
-        const sortOption = [[sort, order]];
+        const sortOption = [];
+
+        if (sort === 'category') {
+            sortOption.push([Category, 'name', order]);
+        } else if (sort === 'type') {
+            sortOption.push([Category, 'type', order]);
+        } else if (sort === 'wallet') {
+            sortOption.push([Wallet, 'name', order]);
+        } else {
+            sortOption.push([sort, order]);
+        }
 
         return await Transaction.findAndCountAll({
             where,
@@ -93,6 +125,36 @@ export class TransactionService {
                 model: Category,
                 attributes: ['id', 'icon', 'name']
             },
+            order: [['transactionDate', 'DESC']],
+            attributes: {
+                exclude: ['categoryId', 'walletId', 'userId', 'createdAt', 'updatedAt']
+            }
+        });
+    }
+
+    static async summaryAll(userId: string, startDate: any, endDate: any) {
+        return await Transaction.findAll({
+            where: {
+                userId,
+                transactionDate: {
+                    [Op.gte]: startDate,
+                    [Op.lte]: endDate
+                }
+            },
+            include: [
+                {
+                    model: Category,
+                    attributes: {
+                        exclude: ['userId', 'createdAt', 'updatedAt']
+                    }
+                },
+                {
+                    model: Wallet,
+                    attributes: {
+                        exclude: ['userId', 'createdAt', 'updatedAt']
+                    }
+                }
+            ],
             order: [['transactionDate', 'DESC']],
             attributes: {
                 exclude: ['categoryId', 'walletId', 'userId', 'createdAt', 'updatedAt']
